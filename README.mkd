@@ -1,0 +1,12 @@
+Image files for the bioboxes.org website. The Docker image contains all the
+tools and fonts required to create png image files from the svg original. The
+svg file should be editted in inkscape. The following two commands will
+generate the image files in the out directory:
+
+  * `script/bootstrap`
+  * `script/build`
+
+The script `script/bootstrap` will deploy the images to the bioboxes S3 bucket
+where there are hosted. Only the CI server has permissions to do this.
+Therefore to update the logos and create new pngs a pull request must be made
+to the github repository for these images.
