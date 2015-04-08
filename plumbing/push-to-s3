@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+require 'fog'
+require 'colorize'
+require 'set'
+
+RE = /logo\/(\d+\.\d+\.\d+)\/.*\.png/
+
+def is_logo?(path)
+  path =~ RE
+end
+
+def get_version(path)
+  RE.match(path).captures.first
+end
+
+
+version, *files = ARGV
+
+connection = Fog::Storage.new({
+  provider:              'AWS',
+  region:                'us-west-1',
+  aws_access_key_id:     ENV["AWS_ACCESS_KEY"],
+  aws_secret_access_key: ENV["AWS_SECRET_KEY"]
+})
+
+directory = connection.directories.get("bioboxes-images")
+
+versions = Set.new directory.
+  files.
+  map(&:key).
+  select{|i| is_logo?(i) }.
+  map{|i| get_version(i) }
+
+exists = versions.include?(version)
+
+if exists
+  STDERR.puts "Skipping deploy, this version already exists: #{version}".colorize(:red)
+else
+  files.each do |file|
+    dst = file.gsub("out", "logo/" + version)
+    directory.files.create(key: dst, body: File.open(file), public: true)
+  end
+  STDOUT.puts "Successfully released #{version}".colorize(:green)
+end

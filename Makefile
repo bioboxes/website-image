@@ -26,12 +26,15 @@ tmp/images.png: images.svg
 		$(name) \
                 inkscape --file=/input/$< --export-png=/input/$@ --export-area-page
 
-bootstrap: .image
+bootstrap: .image Gemfile.lock
 	mkdir -p tmp out
 
 .image: Dockerfile
 	docker build -t $(name) .
 	touch $@
+
+Gemfile.lock: Gemfile
+	bundle install
 
 clean:
 	rm -f tmp/* out/*
