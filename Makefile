@@ -32,3 +32,6 @@ bootstrap: .image
 .image: Dockerfile
 	docker build -t $(name) .
 	touch $@
+
+clean:
+	rm -f tmp/* out/*
