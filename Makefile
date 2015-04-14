@@ -1,10 +1,27 @@
 name   = builder
 docker = docker run --volume=$(shell pwd):/input:rw $(name)
 
-all: out/contribute.png
+objects = out/contribute.png
+
+all: $(objects)
+
+########################################
+#
+# Deploy image files to S3
+#
+########################################
+
+deploy:
+	bundle exec ./plumbing/push-to-s3 $(shell cat VERSION) $(objects)
 
 out/%.png: tmp/%.png
 	cp $< $@
+
+########################################
+#
+# Build image files
+#
+########################################
 
 tmp/%.png: tmp/%.raw.png
 	$(docker) pngquant \
@@ -27,6 +44,12 @@ tmp/images.png: images.svg
 		--file=/input/$< \
 		--export-png=/input/$@ \
 		--export-area-page
+
+########################################
+#
+# Bootstrap the project resources
+#
+########################################
 
 bootstrap: .image Gemfile.lock
 	mkdir -p tmp out
