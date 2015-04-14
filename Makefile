@@ -11,7 +11,7 @@ all: $(objects)
 ########################################
 
 deploy:
-	bundle exec ./plumbing/push-to-s3 $(cat VERSION) $(objects)
+	bundle exec ./plumbing/push-to-s3 $(shell cat VERSION) $(objects)
 
 out/%.png: tmp/%.png
 	cp $< $@
