@@ -14,3 +14,10 @@ dependencies:
 test:
   override:
     - ./script/build
+
+deployment:
+  deploy:
+    branch: master
+    owner: bioboxes
+    commands:
+      - ./script/deploy
