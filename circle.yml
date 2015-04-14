@@ -1,0 +1,16 @@
+---
+machine:
+  services:
+    - docker
+  ruby:
+    version: 2.2.0
+
+dependencies:
+  override:
+    - ./script/bootstrap
+  cache_directories:
+    - "vendor/bundle"
+
+test:
+  override:
+    - ./script/build
