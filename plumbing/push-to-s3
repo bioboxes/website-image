@@ -4,9 +4,9 @@ require 'fog'
 require 'colorize'
 require 'set'
 
-RE = /logo\/(\d+\.\d+\.\d+)\/.*\.png/
+RE = /website\/(\d+\.\d+\.\d+)\/.*\.png/
 
-def is_logo?(path)
+def is_image?(path)
   path =~ RE
 end
 
@@ -29,7 +29,7 @@ directory = connection.directories.get("bioboxes-images")
 versions = Set.new directory.
   files.
   map(&:key).
-  select{|i| is_logo?(i) }.
+  select{|i| is_image?(i) }.
   map{|i| get_version(i) }
 
 exists = versions.include?(version)
@@ -38,7 +38,7 @@ if exists
   STDERR.puts "Skipping deploy, this version already exists: #{version}".colorize(:red)
 else
   files.each do |file|
-    dst = file.gsub("out", "logo/" + version)
+    dst = file.gsub("out", "website/" + version)
     directory.files.create(key: dst, body: File.open(file), public: true)
   end
   STDOUT.puts "Successfully released #{version}".colorize(:green)

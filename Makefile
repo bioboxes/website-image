@@ -1,9 +1,26 @@
 name = builder
 
-all: out/contribute.png
+objects = out/contribute.png
+
+all: $(objects)
+
+########################################
+#
+# Deploy image files to S3
+#
+########################################
+
+deploy:
+	bundle exec ./plumbing/push-to-s3 $(shell cat VERSION) $(objects)
 
 out/%.png: tmp/%.png
 	cp $< $@
+
+########################################
+#
+# Build image files
+#
+########################################
 
 tmp/%.png: tmp/%.raw.png
 	docker run --volume=$(shell pwd):/input:rw $(name) \
@@ -25,6 +42,12 @@ tmp/images.png: images.svg
 		--volume=$(shell pwd):/input:rw \
 		$(name) \
                 inkscape --file=/input/$< --export-png=/input/$@ --export-area-page
+
+########################################
+#
+# Bootstrap the project resources
+#
+########################################
 
 bootstrap: .image Gemfile.lock
 	mkdir -p tmp out
