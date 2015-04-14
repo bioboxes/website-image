@@ -1,7 +1,7 @@
 name   = builder
 docker = docker run --volume=$(shell pwd):/input:rw $(name)
 
-objects = out/contribute.png
+objects = out/contribute.png out/getting-started.png
 
 all: $(objects)
 
@@ -34,7 +34,7 @@ tmp/%.png: tmp/%.raw.png
 tmp/%.raw.png: tmp/images.png
 	$(docker) convert \
 		-colors 255 \
-		-crop $(shell grep $% dimensions.tab | cut -f 2) \
+		-crop $(shell grep $* dimensions.tab | cut -f 2) \
 		+repage \
 		/input/$< \
 		/input/$@
