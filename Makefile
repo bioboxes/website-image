@@ -1,7 +1,7 @@
 name   = builder
 docker = docker run --volume=$(shell pwd):/input:rw $(name)
 
-objects = out/contribute.png out/getting-started.png
+objects = $(addsuffix .png,$(addprefix out/,$(shell cut -f 1 dimensions.tab)))
 
 all: $(objects)
 
